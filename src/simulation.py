@@ -1,76 +1,50 @@
 import numpy as np
 from src.constants import *
 
-def calculate_psi_for_slit(x_detector, center):
+def calculate_psi_for_slit(x_detector, center, D_val, K_val, samples_val):
     """
-    Helper function to calculate the complex amplitude for a single slit 
-    by summing over multiple path samples (Path Integral).
+    Helper function to calculate the complex amplitude for a single slit.
+    Now accepts D, K, and samples as arguments to avoid undefined errors.
     """
     psi = np.zeros(len(x_detector), dtype=complex)
-    # Define points within the slit width
-    slit_points = np.linspace(center - SLIT_WIDTH/2, center + SLIT_WIDTH/2, SAMPLES_PER_SLIT)
+    slit_points = np.linspace(center - SLIT_WIDTH/2, center + SLIT_WIDTH/2, int(samples_val))
     
     for sp in slit_points:
-        # Distance from specific path point to detector
-        r = np.sqrt(SCREEN_DISTANCE**2 + (x_detector - sp)**2)
+        # Distance from specific path point to detector using custom D
+        r = np.sqrt(D_val**2 + (x_detector - sp)**2)
         # Standard Path Integral phase contribution
-        psi += np.exp(1j * K * r) / r
+        psi += np.exp(1j * K_val * r) / r
     return psi
 
-def simulate_standard():
-    """
-    Simulates the standard Quantum Double Slit experiment.
-    Returns: x_detector (m), intensity (array)
-    """
+# src/simulation.py
+
+def simulate_standard_custom(a, D):
     x_detector = np.linspace(-SCREEN_WIDTH/2, SCREEN_WIDTH/2, NUM_POINTS)
-    
-    # Calculate amplitudes for both slits
-    psi1 = calculate_psi_for_slit(x_detector, SLIT_DISTANCE/2)
-    psi2 = calculate_psi_for_slit(x_detector, -SLIT_DISTANCE/2)
-    
-    # QUANTUM SUPERPOSITION: Add amplitudes before squaring
+    psi1 = calculate_psi_for_slit(x_detector, a/2, D, K, SAMPLES_PER_SLIT)
+    psi2 = calculate_psi_for_slit(x_detector, -a/2, D, K, SAMPLES_PER_SLIT)
     intensity = np.abs(psi1 + psi2)**2
     return x_detector, intensity
 
-def simulate_observed():
-    """
-    Simulates the Double Slit experiment under observation (Wavefunction Collapse).
-    Returns: x_detector (m), intensity (array)
-    """
+def simulate_observed_custom(a, D):
     x_detector = np.linspace(-SCREEN_WIDTH/2, SCREEN_WIDTH/2, NUM_POINTS)
-    
-    # Calculate amplitudes for both slits
-    psi1 = calculate_psi_for_slit(x_detector, SLIT_DISTANCE/2)
-    psi2 = calculate_psi_for_slit(x_detector, -SLIT_DISTANCE/2)
-    
-    # OBSERVER EFFECT: Add probabilities (intensities) directly
-    # Interference fringes vanish, replaced by two classic humps.
+    psi1 = calculate_psi_for_slit(x_detector, a/2, D, K, SAMPLES_PER_SLIT)
+    psi2 = calculate_psi_for_slit(x_detector, -a/2, D, K, SAMPLES_PER_SLIT)
+    # Observer effect: Sum intensities, not amplitudes
     intensity = np.abs(psi1)**2 + np.abs(psi2)**2
     return x_detector, intensity
 
-def simulate_zigzag_paths(num_mid_points=1000):
-    """
-    Simulates the Path Integral with an intermediate scattering layer.
-    """
-    mid_x = SCREEN_DISTANCE / 2
+def simulate_zigzag_custom(a, D, num_mid_points=1000):
+    mid_x = D / 2 # Use custom D
     x_detector = np.linspace(-SCREEN_WIDTH/2, SCREEN_WIDTH/2, 500)
     y_mid = np.linspace(-SCREEN_WIDTH, SCREEN_WIDTH, num_mid_points)
-    
     total_psi = np.zeros(len(x_detector), dtype=complex)
-    slit_centers = [SLIT_DISTANCE/2, -SLIT_DISTANCE/2]
+    slit_centers = [a/2, -a/2] # Use custom a
     
-    # Sum over ALL combinations: Slit -> Middle Point -> Detector
     for sc in slit_centers:
         for ym in y_mid:
-            # Phase from Slit to Middle Point
             r1 = np.sqrt(mid_x**2 + (ym - sc)**2)
             amp1 = np.exp(1j * K * r1) / np.sqrt(r1)
-            
-            # Phase from Middle Point to Detector
-            r2 = np.sqrt((SCREEN_DISTANCE - mid_x)**2 + (x_detector - ym)**2)
+            r2 = np.sqrt((D - mid_x)**2 + (x_detector - ym)**2)
             amp2 = np.exp(1j * K * r2) / np.sqrt(r2)
-            
             total_psi += amp1 * amp2
-
-    intensity = np.abs(total_psi)**2
-    return x_detector, intensity
+    return x_detector, np.abs(total_psi)**2
