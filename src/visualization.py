@@ -27,7 +27,7 @@ def plot_geometry_custom(x_detector, intensity, a, d, D):
     gap_vis = SLIT_WIDTH * 2 
     wall_h = 0.006 
     
-    # Draw Metal Sheet (Slits) - Use 'a' instead of SLIT_DISTANCE
+    # Draw Metal Sheet (Slits)
     ax1.plot([mask_x, mask_x], [-wall_h, -a/2 - gap_vis], 'k-', lw=6)
     ax1.plot([mask_x, mask_x], [-a/2 + gap_vis, a/2 - gap_vis], 'k-', lw=6)
     ax1.plot([mask_x, mask_x], [a/2 + gap_vis, wall_h], 'k-', lw=6, label="Metal Sheet")
@@ -48,7 +48,7 @@ def plot_geometry_custom(x_detector, intensity, a, d, D):
     ax1.annotate('', xy=(mask_x, -0.005), xytext=(screen_x, -0.005), arrowprops=dict(arrowstyle='<->'))
     ax1.text((mask_x + screen_x)/2, -0.0058, 'D', fontsize=12, ha='center')
 
-    # Slit Separation 'a' - Using the input 'a'
+    # Slit Separation 'a'
     ax1.annotate('', xy=(-0.05, -a/2), xytext=(-0.05, a/2), arrowprops=dict(arrowstyle='<->', color='blue'))
     ax1.text(-0.08, 0, 'a', fontsize=12, va='center', color='blue')
 
@@ -62,11 +62,11 @@ def plot_geometry_custom(x_detector, intensity, a, d, D):
                  arrowprops=dict(arrowstyle='<->', color='purple'))
     ax1.text(screen_x + 0.07, y_p/2, r'$y$', color='purple', fontsize=14, va='center')
 
-    # Converging Paths to P (Use 'a' for origin points)
+    # Converging Paths to P
     ax1.plot([mask_x, screen_x], [a/2, y_p], 'g--', alpha=0.6, lw=1.5)
     ax1.plot([mask_x, screen_x], [-a/2, y_p], 'g--', alpha=0.6, lw=1.5, label="Secondary Paths")
 
-    # Initial Paths (Use 'a' for target points)
+    # Initial Paths
     ax1.annotate('', xy=(mask_x, a/2), xytext=(source_x, source_y), arrowprops=dict(arrowstyle="->", color='gray', alpha=0.4))
     ax1.annotate('', xy=(mask_x, -a/2), xytext=(source_x, source_y), arrowprops=dict(arrowstyle="->", color='gray', alpha=0.4))
 

@@ -1,11 +1,8 @@
 import numpy as np
 from src.constants import *
 
-def calculate_psi_for_slit(x_detector, center, D_val, K_val, samples_val):
-    """
-    Helper function to calculate the complex amplitude for a single slit.
-    Now accepts D, K, and samples as arguments to avoid undefined errors.
-    """
+def calculate_psi_for_slit(x_detector, center, D_val, K_val, samples_val):    
+    # Helper function to calculate the complex amplitude for a single slit.
     psi = np.zeros(len(x_detector), dtype=complex)
     slit_points = np.linspace(center - SLIT_WIDTH/2, center + SLIT_WIDTH/2, int(samples_val))
     
@@ -15,8 +12,6 @@ def calculate_psi_for_slit(x_detector, center, D_val, K_val, samples_val):
         # Standard Path Integral phase contribution
         psi += np.exp(1j * K_val * r) / r
     return psi
-
-# src/simulation.py
 
 def simulate_standard_custom(a, D):
     x_detector = np.linspace(-SCREEN_WIDTH/2, SCREEN_WIDTH/2, NUM_POINTS)
@@ -34,11 +29,11 @@ def simulate_observed_custom(a, D):
     return x_detector, intensity
 
 def simulate_zigzag_custom(a, D, num_mid_points=1000):
-    mid_x = D / 2 # Use custom D
+    mid_x = D / 2
     x_detector = np.linspace(-SCREEN_WIDTH/2, SCREEN_WIDTH/2, 500)
     y_mid = np.linspace(-SCREEN_WIDTH, SCREEN_WIDTH, num_mid_points)
     total_psi = np.zeros(len(x_detector), dtype=complex)
-    slit_centers = [a/2, -a/2] # Use custom a
+    slit_centers = [a/2, -a/2]
     
     for sc in slit_centers:
         for ym in y_mid:

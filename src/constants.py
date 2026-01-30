@@ -1,13 +1,14 @@
 import numpy as np
 
+# --- WAVE PHYSICS ---
 WAVELENGTH = 500e-9 
 K = 2 * np.pi / WAVELENGTH
-SLIT_DISTANCE = 1e-3
-SLIT_WIDTH = 0.1e-3
-SCREEN_DISTANCE = 1.0
-SCREEN_WIDTH = 0.01
-NUM_POINTS = 1000
-SAMPLES_PER_SLIT = 50
-
-FREQ = 1e14
+SPEED_OF_LIGHT = 3e8
+FREQ = SPEED_OF_LIGHT / WAVELENGTH
 OMEGA = 2 * np.pi * FREQ
+
+# --- SIMULATION SETTINGS ---
+SLIT_WIDTH = 0.05e-3  # Width of each slit
+SCREEN_WIDTH = 0.02   # 2cm wide detector
+NUM_POINTS = 1000     # Pixels on screen
+SAMPLES_PER_SLIT = 40 # Path integral resolution
